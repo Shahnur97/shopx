@@ -129,8 +129,24 @@ class _HomePageState extends State<HomePage> {
 
           //Gridview producths............
           Expanded(
-            child: Center(
-              child: Text('Product are here'),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 0.72,
+                ),
+                itemCount: filtered.length,
+                itemBuilder: (context, index) {
+                  return ProductCard(
+                    product: filtered[index],
+                    isFavorite: favorite.contains(filtered[index]['name']),
+                    onFavoriteTap: () {},
+                  );
+                },
+              ),
             ),
           ),
         ],
