@@ -28,6 +28,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //filter products by category AND search
+    final filtered = products.where((p) {
+      final matchesCategory =
+          selectedCategory == 'All' || p['category'] == selectedCategory;
+      final matchesSearch = p['name']!.toLowerCase().contains(
+        searchText.toLowerCase(),
+      );
+      return matchesCategory && matchesSearch;
+    }).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -94,7 +104,7 @@ class _HomePageState extends State<HomePage> {
 
           //category chips........
           SizedBox(
-            height: 50,
+            height: 40,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -106,9 +116,14 @@ class _HomePageState extends State<HomePage> {
                   onTap: () => setState(() => selectedCategory = cat),
                   child: Container(
                     margin: const EdgeInsets.only(right: 10),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
-                      color: isSelected ? Colors.orange : Theme.of(context).cardColor,
+                      color: isSelected
+                          ? Colors.orange
+                          : Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -136,14 +151,23 @@ class _HomePageState extends State<HomePage> {
                   crossAxisCount: 2,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
-                  childAspectRatio: 0.72,
+                  childAspectRatio: 0.65,
                 ),
                 itemCount: filtered.length,
                 itemBuilder: (context, index) {
                   return ProductCard(
                     product: filtered[index],
                     isFavorite: favorite.contains(filtered[index]['name']),
-                    onFavoriteTap: () {},
+                    onFavoriteTap: () {
+                      setState(() {
+                        final productName = filtered[index]['name']!;
+                        if (favorite.contains(productName)) {
+                          favorite.remove(productName);
+                        } else {
+                          favorite.add(productName);
+                        }
+                      });
+                    },
                   );
                 },
               ),
