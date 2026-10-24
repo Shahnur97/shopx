@@ -2,14 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shopx/screens/main_page.dart';
 
 class SplashScreen extends StatefulWidget {
-  final VoidCallback onThemeToggle;
-  final bool isDarkMode;
-  
-  const SplashScreen({
-    super.key,
-    required this.onThemeToggle,
-    required this.isDarkMode,
-  });
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -24,11 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              MainPage(
-                onThemeToggle: widget.onThemeToggle,
-                isDarkMode: widget.isDarkMode,
-              ),
+          builder: (context) => MainPage(),
         ),
       );
     });
@@ -40,9 +29,10 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: Colors.orange,
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(padding: EdgeInsetsGeometry.all(20)),
+            // Padding(padding: EdgeInsetsGeometry.all(20)),
             //App icon........
             Container(
               padding: EdgeInsets.all(20),

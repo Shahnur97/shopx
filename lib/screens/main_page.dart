@@ -5,14 +5,7 @@ import 'package:shopx/screens/cart_page.dart';
 import 'package:shopx/screens/profile_page.dart';
 
 class MainPage extends StatefulWidget {
-  final VoidCallback onThemeToggle;
-  final bool isDarkMode;
-
-  const MainPage({
-    super.key,
-    required this.onThemeToggle,
-    required this.isDarkMode,
-  });
+  const MainPage({super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -22,24 +15,12 @@ class _MainPageState extends State<MainPage> {
   int currentIndex = 0;
 
   @override
-  void didUpdateWidget(MainPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (oldWidget.isDarkMode != widget.isDarkMode) {
-      setState(() {});
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     final screens = [
-      HomePage(),
-      FavoritePage(),
+      HomePage(onCartTap: () => setState(() => currentIndex = 2)),
+      FavoritePage(product: [],),
       CartPage(),
-      ProfilePage(
-        onThemeToggle: widget.onThemeToggle,
-        isDarkMode: widget.isDarkMode,
-      ),
+      ProfilePage(),
     ];
 
     return Scaffold(

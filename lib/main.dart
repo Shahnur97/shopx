@@ -1,33 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:shopx/provider/cart_provider.dart';
+import 'package:shopx/provider/favorite_provider.dart';
+import 'package:shopx/provider/product_provide.dart';
 import 'package:shopx/screens/splash_screen.dart';
+import 'package:shopx/provider/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()..loadProducts())
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  //track currnet theme........
-  bool isDarkMode = false;
-
-  //toggle between light and dark...........
-  void toggleTheme() {
-    setState(() {
-      isDarkMode = !isDarkMode;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      themeMode: context.watch<ThemeProvider>().isDarkMode
+          ? ThemeMode.dark
+          : ThemeMode.light,
 
       //Light theme configuration...........
       theme: ThemeData(
@@ -63,10 +65,22 @@ class _MyAppState extends State<MyApp> {
         cardColor: const Color(0xFF2C2C2C),
       ),
 
-      home: SplashScreen(
-        onThemeToggle: toggleTheme,
-        isDarkMode: isDarkMode,
-      ),
+      home: SplashScreen(),
     );
   }
 }
+
+
+// Testing use only.......................
+// void main() async {
+//   try {
+//     final products = await fetchProducts();
+//     print('Count: ${products.length}');
+//     print('Count: ${products.first.id}');
+//     print('Count: ${products.first.title}');
+//     print('Count: ${products.first.category}');
+//     print('Count: ${products.first.price}');
+//   } catch (e) {
+//     print('Error $e');
+//   }
+// }

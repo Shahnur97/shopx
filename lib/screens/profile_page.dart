@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopx/provider/theme_provider.dart';
 
 class ProfilePage extends StatelessWidget {
-  final VoidCallback onThemeToggle;
-  final bool isDarkMode;
-
-  const ProfilePage({
-    super.key,
-    required this.onThemeToggle,
-    required this.isDarkMode,
-  });
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -105,7 +101,7 @@ class ProfilePage extends StatelessWidget {
                   title: Text(isDarkMode ? 'Dark Mode' : 'Light Mode'),
                   trailing: Switch(
                     value: isDarkMode,
-                    onChanged: (_) => onThemeToggle(),
+                    onChanged: (_) => context.read<ThemeProvider>().toggleTheme(),
                     activeThumbColor: Colors.orange,
                   ),
                 ),
@@ -151,7 +147,7 @@ class ProfilePage extends StatelessWidget {
         ],
       ),
       child: ListTile(
-        leading: Icon(icon, color: Colors.orange,),
+        leading: Icon(icon, color: Colors.orange),
         title: Text(title),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       ),

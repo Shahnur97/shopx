@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopx/provider/favorite_provider.dart';
+import 'package:shopx/data/product_class.dart';
 
 class ProductCard extends StatelessWidget {
-  final Map<String, String> product;
-  final bool isFavorite;
-  final VoidCallback onFavoriteTap;
+  // final Map<String, String> product;
+  final Product product;
 
-  const ProductCard({
-    super.key,
-    required this.product,
-    required this.isFavorite,
-    required this.onFavoriteTap,
-  });
+  const ProductCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
+    final isFavorite = context.select<FavoriteProvider, bool>(
+      (p) => p.isFavorite(product.id),
+    );
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
@@ -34,12 +34,19 @@ class ProductCard extends StatelessWidget {
               //Product Image.........
               ClipRRect(
                 child: Hero(
-                  tag: 'product-${product['name']}',
+                  tag: 'product-${product.title}',
                   child: Image.network(
-                    product['image']!,
+                    product.thumbnail,
                     height: 140,
                     width: double.infinity,
                     fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                    errorBuilder: (context, error, stack) {
+                      return const Icon(Icons.broken_image);
+                    },
                   ),
                 ),
               ),
@@ -49,7 +56,11 @@ class ProductCard extends StatelessWidget {
                 top: 8,
                 right: 8,
                 child: GestureDetector(
-                  onTap: onFavoriteTap,
+                  onTap: () {
+                    context.read<FavoriteProvider>().toggleFavorite(
+                      product.id,
+                    );
+                  },
                   child: CircleAvatar(
                     radius: 20,
                     backgroundColor: Colors.white,
@@ -72,7 +83,7 @@ class ProductCard extends StatelessWidget {
               children: [
                 //Product name
                 Text(
-                  product['name']!,
+                  product.title,
                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -86,7 +97,7 @@ class ProductCard extends StatelessWidget {
                     const Icon(Icons.star, color: Colors.amber, size: 13),
                     const SizedBox(width: 3),
                     Text(
-                      product['rating']!,
+                      '${product.rating}',
                       style: TextStyle(
                         color: Colors.grey.shade600,
                         fontSize: 12,
@@ -99,7 +110,7 @@ class ProductCard extends StatelessWidget {
 
                 //Price
                 Text(
-                  '\$${product['price']}',
+                  '\$${product.price}',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,

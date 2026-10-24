@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shopx/data/product_class.dart';
+import 'package:shopx/provider/favorite_provider.dart';
+import 'package:shopx/provider/cart_provider.dart';
 
 class DetailPage extends StatefulWidget {
-  final Map<String, String> product;
-  final bool isFavorite;
-  final VoidCallback onFavoriteTap;
+  final Product product;
 
-  const DetailPage({
-    super.key,
-    required this.product,
-    required this.isFavorite,
-    required this.onFavoriteTap,
-  });
+  const DetailPage({super.key, required this.product});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> {
-  int quantity = 0;
+  int quantity = 1;
 
   @override
   Widget build(BuildContext context) {
+    final isFavorite = context.watch<FavoriteProvider>().isFavorite(
+      widget.product.id,
+    );
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -31,9 +31,9 @@ class _DetailPageState extends State<DetailPage> {
               children: [
                 //product image..........
                 Hero(
-                  tag: 'product-${widget.product['name']}',
+                  tag: 'product-${widget.product.title}',
                   child: Image.network(
-                    widget.product['image']!,
+                    widget.product.thumbnail,
                     height: 350,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -59,16 +59,15 @@ class _DetailPageState extends State<DetailPage> {
                   right: 15,
                   child: GestureDetector(
                     onTap: () {
-                      widget.onFavoriteTap();
-                      setState(() {});
+                      context.read<FavoriteProvider>().toggleFavorite(
+                        widget.product.id,
+                      );
                     },
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       child: Icon(
-                        widget.isFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        color: widget.isFavorite ? Colors.red : Colors.grey,
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite ? Colors.red : Colors.grey,
                       ),
                     ),
                   ),
@@ -95,7 +94,7 @@ class _DetailPageState extends State<DetailPage> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          widget.product['category']!,
+                          widget.product.category,
                           style: TextStyle(
                             color: Colors.orange,
                             fontSize: 13,
@@ -110,7 +109,7 @@ class _DetailPageState extends State<DetailPage> {
                       const SizedBox(width: 4),
 
                       Text(
-                        widget.product['rating']!,
+                        '${widget.product.rating}',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -123,7 +122,7 @@ class _DetailPageState extends State<DetailPage> {
 
                   //product name..........
                   Text(
-                    widget.product['name']!,
+                    widget.product.title,
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
 
@@ -131,7 +130,7 @@ class _DetailPageState extends State<DetailPage> {
 
                   //product price.........
                   Text(
-                    '\$${widget.product['price']}',
+                    '\$${widget.product.price}',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -149,7 +148,7 @@ class _DetailPageState extends State<DetailPage> {
 
                   //Description..........
                   Text(
-                    widget.product['description']!,
+                    widget.product.description,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
@@ -166,7 +165,7 @@ class _DetailPageState extends State<DetailPage> {
                       //decrease button........
                       GestureDetector(
                         onTap: () {
-                          if (quantity >= 1) {
+                          if (quantity > 1) {
                             setState(() => quantity--);
                           }
                         },
@@ -227,6 +226,10 @@ class _DetailPageState extends State<DetailPage> {
                     height: 55,
                     child: ElevatedButton(
                       onPressed: () {
+                        context.read<CartProvider>().addToCart(
+                          widget.product,
+                          quantity,
+                        );
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Row(
@@ -237,14 +240,14 @@ class _DetailPageState extends State<DetailPage> {
                                 ),
                                 const SizedBox(width: 10),
                                 Text(
-                                  '${widget.product['name']} added to cart!',
+                                  '${widget.product.title} added to cart!',
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ],
                             ),
-                            backgroundColor: Colors.orange,
+                            backgroundColor: Colors.orangeAccent,
                             duration: const Duration(seconds: 2),
-                            behavior: SnackBarBehavior.floating,
+                            behavior: SnackBarBehavior.fixed,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -263,7 +266,7 @@ class _DetailPageState extends State<DetailPage> {
                           const Icon(Icons.shopping_cart, color: Colors.white),
                           const SizedBox(width: 10),
                           Text(
-                            'Add to Cart - \$${(int.parse(widget.product['price']!))}',
+                            'Add to Cart - \$${(widget.product.price * quantity).toStringAsFixed(2)}',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
