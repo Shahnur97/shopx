@@ -1,6 +1,7 @@
 # shopx
 
-A new Flutter project.
+<h3>A brand new Flutter project.</h3>
+<p>For now a progressing project where I already finished dart UI, handling State Management, using API controll and now I'm focusing on Backend after that Databases.</p>
 
 ## Getting Started
 
