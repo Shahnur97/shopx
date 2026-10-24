@@ -10,6 +10,10 @@ A Flutter e-commerce app that loads its products from a live API.
 - Light and dark mode
 
 ## Screenshots
+![Home](screenshots/home_page.png)
+![Home](screenshots/favorites_page.png)
+![Home](screenshots/detail_page.png)
+![Home](screenshots/cart_page.png)
 
 ## Built with
 - Flutter and Dart
