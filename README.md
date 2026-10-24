@@ -1,6 +1,29 @@
-# shopx
+# ShopX
 
-A new Flutter project.
+A Flutter e-commerce app that loads its products from a live API.
+
+## Features
+- Product list loaded from the DummyJSON API, with loading, error and retry states
+- Search and category filter (categories come from the API)
+- Product detail page with Hero animation
+- Favorites and a shopping cart with quantities and a running total
+- Light and dark mode
+
+## Screenshots
+
+## Built with
+- Flutter and Dart
+- Provider for state management
+- `http` package for networking
+- [DummyJSON](https://dummyjson.com) as the product API
+
+## Run it
+1. Clone the repo
+2. `flutter pub get`
+3. `flutter run`
+
+## Author
+Mohammad Shah Nur (Niyom), CSE student at Daffodil International University
 
 ## Getting Started
 
